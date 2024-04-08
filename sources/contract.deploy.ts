@@ -1,4 +1,4 @@
-import { beginCell, contractAddress, toNano, TonClient4, WalletContractV4, internal, fromNano } from "@ton/ton";
+import { beginCell, contractAddress, toNano, TonClient4, WalletContractV4, internal, fromNano, Address } from "@ton/ton";
 import { mnemonicToPrivateKey } from "ton-crypto";
 import { buildOnchainMetadata } from "./utils/jetton-helpers";
 
@@ -12,11 +12,11 @@ dotenv.config();
 (async () => {
     //create client for testnet sandboxv4 API - alternative endpoint
     const client4 = new TonClient4({
-        // endpoint: "https://sandbox-v4.tonhubapi.com",
-        endpoint: "https://mainnet-v4.tonhubapi.com",
+         endpoint: "https://sandbox-v4.tonhubapi.com",
+       // endpoint: "https://mainnet-v4.tonhubapi.com",
     });
 
-    let mnemonics = (process.env.mnemonics_2 || "").toString(); // 🔴 Change to your own, by creating .env file!
+    let mnemonics = (process.env.mnemonics || "").toString(); // 🔴 Change to your own, by creating .env file!
     let keyPair = await mnemonicToPrivateKey(mnemonics.split(" "));
     let secretKey = keyPair.secretKey;
     let workchain = 0; //we are working in basechain.
@@ -26,9 +26,9 @@ dotenv.config();
     let deployer_wallet_contract = client4.open(deployer_wallet);
 
     const jettonParams = {
-        name: "XXXXXX Name",
+        name: "DiwataToken",
         description: "This is description of Test Jetton Token in Tact-lang",
-        symbol: "XXXXXXXXX",
+        symbol: "DT",
         image: "https://avatars.githubusercontent.com/u/104382459?s=200&v=4",
     };
 
@@ -49,7 +49,7 @@ dotenv.config();
             storeMint({
                 $$type: "Mint",
                 amount: supply,
-                receiver: deployer_wallet_contract.address,
+                receiver: Address.parse("0QAOGWuHwLO78FY9W4rk1hbMdI_kQKIEqAWRwmbu47mxanoj"),
             })
         )
         .endCell();

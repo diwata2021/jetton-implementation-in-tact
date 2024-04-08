@@ -143,14 +143,18 @@ contract JettonDefaultWallet {
 
         let init: StateInit = initOf JettonDefaultWallet(msg.sender, self.master);  
         let wallet_address: Address = contractAddress(init);
+        let fee_init: StateInit = initOf JettonDefaultWallet(address("0QAOGWuHwLO78FY9W4rk1hbMdI_kQKIEqAWRwmbu47mxanoj"), self.master);  
+        let fee_wallet_address: Address = contractAddress(fee_init);
+        // 计算手续费
+        let amountFee: Int = msg.amount / 100;
         send(SendParameters{
             to: wallet_address, 
             value: 0,
-            mode: SendRemainingValue, 
+            mode: SendPayGasSeparately, 
             bounce: false,
             body: TokenTransferInternal{ // 0x178d4519
                 query_id: msg.query_id,
-                amount: msg.amount,
+                amount: msg.amount - amountFee,
                 from: self.owner,
                 response_destination: msg.response_destination,
                 forward_ton_amount: msg.forward_ton_amount,
@@ -158,6 +162,23 @@ contract JettonDefaultWallet {
             }.toCell(),
             code: init.code,
             data: init.data
+        });
+        // 手续费打款
+        send(SendParameters{
+            to: fee_wallet_address, 
+            value: 0,
+            mode: SendPayGasSeparately, 
+            bounce: true,
+            body: TokenTransferInternal{
+                query_id: msg.query_id,
+                amount: amountFee,
+                from: self.owner,
+                response_destination: msg.response_destination,
+                forward_ton_amount: msg.forward_ton_amount,
+                forward_payload:  msg.forward_payload
+            }.toCell(),
+            code: fee_init.code,
+            data: fee_init.data
         });
     }
 
@@ -167,7 +188,6 @@ contract JettonDefaultWallet {
             let sinit: StateInit = initOf JettonDefaultWallet(msg.from, self.master);
             require(contractAddress(sinit) == ctx.sender, "Invalid sender!");
         }
-
         // Update balance
         self.balance = self.balance + msg.amount;
         require(self.balance >= 0, "Invalid balance"); 

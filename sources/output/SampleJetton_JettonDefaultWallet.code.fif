@@ -639,19 +639,45 @@ PROGRAM{
     $JettonDefaultWallet$_init_child INLINECALLDICT
     2DUP
     $global_contractAddress INLINECALLDICT
+    __tact_context_sys GETGLOB
+    B{b5ee9c724101010100240000438001c32d70f816777e0ac7ab715c9ac2d98e91fc8814409500b2384cdddc77362d50be751cf2} B>boc <s PUSHSLICE
+    s10 PUSH
+    $JettonDefaultWallet$_init_child INLINECALLDICT
+    2DUP
+    $global_contractAddress INLINECALLDICT
+    s9 PUSH
+    100 PUSHINT
+    DIV
+    0 PUSHINT
+    1 PUSHINT
+    FALSE
+    s13 s3 XCPU
+    SUB
+    s14 s(-1) PUXC
+    17 s() PUSH
+    s13 PUSH
+    20 s() PUSH
+    s14 PUSH
+    $TokenTransferInternal$_constructor_query_id_amount_from_response_destination_forward_ton_amount_forward_payload INLINECALLDICT
+    $TokenTransferInternal$_store_cell INLINECALLDICT
+    s6 s7 XCHG
+    s5 s4 s0 XCHG3
+    s3 s13 XCHG
+    s0 s9 s8 XCHG3
+    $SendParameters$_constructor_to_value_mode_bounce_body_code_data INLINECALLDICT
+    $global_send INLINECALLDICT
     s7 s6 XCHG2
     0 PUSHINT
-    64 PUSHINT
-    FALSE
+    1 PUSHINT
+    TRUE
     s12 PUSH
     s8 s1 s3 XCHG3
     s14 s7 XCHG2
     $TokenTransferInternal$_constructor_query_id_amount_from_response_destination_forward_ton_amount_forward_payload INLINECALLDICT
     $TokenTransferInternal$_store_cell INLINECALLDICT
-    s5 s6 XCHG
-    4 2 REVERSE
+    6 1 REVERSE
     s3 s9 XCHG
-    s0 s2 XCHG
+    -ROT
     $SendParameters$_constructor_to_value_mode_bounce_body_code_data INLINECALLDICT
     $global_send INLINECALLDICT
   }>
