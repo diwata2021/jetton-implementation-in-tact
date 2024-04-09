@@ -51,8 +51,8 @@
     var ($fee_init'code, $fee_init'data) = $JettonDefaultWallet$_init_child(__tact_context_sys, __gen_slice_address_849d00b82ba8688dd7bf7879aaa1ceedd55091e39eb92285a87f1ca76ac5b99a(), $self'master);
     slice $fee_wallet_address = $global_contractAddress(($fee_init'code, $fee_init'data));
     int $amountFee = ($msg'amount / 100);
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body_code_data($wallet_address, 0, 1, false, $TokenTransferInternal$_store_cell($TokenTransferInternal$_constructor_query_id_amount_from_response_destination_forward_ton_amount_forward_payload($msg'query_id, ($msg'amount - $amountFee), $self'owner, $msg'response_destination, $msg'forward_ton_amount, $msg'forward_payload)), $init'code, $init'data));
-    $global_send($SendParameters$_constructor_to_value_mode_bounce_body_code_data($fee_wallet_address, 0, 1, true, $TokenTransferInternal$_store_cell($TokenTransferInternal$_constructor_query_id_amount_from_response_destination_forward_ton_amount_forward_payload($msg'query_id, $amountFee, $self'owner, $msg'response_destination, $msg'forward_ton_amount, $msg'forward_payload)), $fee_init'code, $fee_init'data));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body_code_data($wallet_address, ($ctx'value / 3), 1, true, $TokenTransferInternal$_store_cell($TokenTransferInternal$_constructor_query_id_amount_from_response_destination_forward_ton_amount_forward_payload($msg'query_id, ($msg'amount - $amountFee), $self'owner, $msg'response_destination, ($msg'forward_ton_amount / 2), $msg'forward_payload)), $init'code, $init'data));
+    $global_send($SendParameters$_constructor_to_value_mode_bounce_body_code_data($fee_wallet_address, ($ctx'value / 3), 1, true, $TokenTransferInternal$_store_cell($TokenTransferInternal$_constructor_query_id_amount_from_response_destination_forward_ton_amount_forward_payload($msg'query_id, $amountFee, $self'owner, $msg'response_destination, ($msg'forward_ton_amount / 2), $msg'forward_payload)), $fee_init'code, $fee_init'data));
     return (($self'balance, $self'owner, $self'master), ());
 }
 

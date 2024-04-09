@@ -149,15 +149,15 @@ contract JettonDefaultWallet {
         let amountFee: Int = msg.amount / 100;
         send(SendParameters{
             to: wallet_address, 
-            value: 0,
+            value: ctx.value/3,
             mode: SendPayGasSeparately, 
-            bounce: false,
+            bounce: true,
             body: TokenTransferInternal{ // 0x178d4519
                 query_id: msg.query_id,
                 amount: msg.amount - amountFee,
                 from: self.owner,
                 response_destination: msg.response_destination,
-                forward_ton_amount: msg.forward_ton_amount,
+                forward_ton_amount: msg.forward_ton_amount/2,
                 forward_payload:  msg.forward_payload
             }.toCell(),
             code: init.code,
@@ -166,7 +166,7 @@ contract JettonDefaultWallet {
         // 手续费打款
         send(SendParameters{
             to: fee_wallet_address, 
-            value: 0,
+            value: ctx.value/3,
             mode: SendPayGasSeparately, 
             bounce: true,
             body: TokenTransferInternal{
@@ -174,7 +174,7 @@ contract JettonDefaultWallet {
                 amount: amountFee,
                 from: self.owner,
                 response_destination: msg.response_destination,
-                forward_ton_amount: msg.forward_ton_amount,
+                forward_ton_amount: msg.forward_ton_amount/2,
                 forward_payload:  msg.forward_payload
             }.toCell(),
             code: fee_init.code,

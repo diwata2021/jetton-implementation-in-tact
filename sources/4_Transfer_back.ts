@@ -9,7 +9,7 @@ dotenv.config();
 import { SampleJetton, storeTokenTransfer } from "./output/SampleJetton_SampleJetton";
 // ========================================
 
-let NewOnwer_Address = Address.parse("0QC4-VtCfGBeQj2MyJC4BxIdzVZDFEe-VX1KKB4A27L_kqOz"); // 🔴 Owner should usually be the deploying wallet's address.
+let NewOnwer_Address = Address.parse("UQABdDBcEXsOQ903TiJzoQllT5kLMvAal22Wbrm5R7_ItgLn"); // 🔴 Owner should usually be the deploying wallet's address.
 
 (async () => {
     const client4 = new TonClient4({
@@ -18,15 +18,22 @@ let NewOnwer_Address = Address.parse("0QC4-VtCfGBeQj2MyJC4BxIdzVZDFEe-VX1KKB4A27
     });
 
     let mnemonics = (process.env.mnemonics || "").toString(); // 🔴 Change to your own, by creating .env file!
+    let reciverMnemonics = (process.env.mnemonics_receiver || "").toString();
     let keyPair = await mnemonicToPrivateKey(mnemonics.split(" "));
-    let secretKey = keyPair.secretKey;
+    let reciverKeyPair = await mnemonicToPrivateKey(reciverMnemonics.split(" "));
+    let secretKey = reciverKeyPair.secretKey;
     let workchain = 0;
     let wallet = WalletContractV4.create({
         workchain,
         publicKey: keyPair.publicKey,
     });
+    let recieverWallet = WalletContractV4.create({
+        workchain,
+        publicKey: reciverKeyPair.publicKey,
+    });
 
     let wallet_contract = client4.open(wallet);
+    let reciver_wallet_contract = client4.open(recieverWallet);
     const jettonParams = {
         name: "DiwataTokenV1",
         description: "This is description of Test Jetton Token in Tact-lang contain fee",
@@ -45,8 +52,8 @@ let NewOnwer_Address = Address.parse("0QC4-VtCfGBeQj2MyJC4BxIdzVZDFEe-VX1KKB4A27
     let jetton_masterWallet = contractAddress(workchain, init);
     let contract_dataFormat = SampleJetton.fromAddress(jetton_masterWallet);
     let contract = client4.open(contract_dataFormat);
-    let jetton_wallet = await contract.getGetWalletAddress(wallet_contract.address);
-    console.log("✨ " + wallet_contract.address + "'s JettonWallet ==> ");
+    let jetton_wallet = await contract.getGetWalletAddress(reciver_wallet_contract.address);
+    console.log("✨ " + reciver_wallet_contract.address + "'s JettonWallet ==> ");
     // ✨Pack the forward message into a cell
     const test_message_left = beginCell()
         .storeBit(0) // 🔴  whether you want to store the forward payload in the same cell or not. 0 means no, 1 means yes.
@@ -66,9 +73,9 @@ let NewOnwer_Address = Address.parse("0QC4-VtCfGBeQj2MyJC4BxIdzVZDFEe-VX1KKB4A27
             storeTokenTransfer({
                 $$type: "TokenTransfer",
                 query_id: 0n,
-                amount: toNano(200),
+                amount: toNano(100),
                 sender:NewOnwer_Address,
-                response_destination: wallet_contract.address, 
+                response_destination: reciver_wallet_contract.address, 
                 custom_payload: forward_string_test,
                 forward_ton_amount: toNano("0.0001"),
                 forward_payload: test_message_left,
@@ -77,13 +84,13 @@ let NewOnwer_Address = Address.parse("0QC4-VtCfGBeQj2MyJC4BxIdzVZDFEe-VX1KKB4A27
         .endCell();
 
     let deployAmount = toNano("0.3");
-    let seqno: number = await wallet_contract.getSeqno();
-    let balance: bigint = await wallet_contract.getBalance();
+    let seqno: number = await reciver_wallet_contract.getSeqno();
+    let balance: bigint = await reciver_wallet_contract.getBalance();
     // ========================================
     printSeparator();
     console.log("Current deployment wallet balance: ", fromNano(balance).toString(), "💎TON");
     console.log("\n🛠️ Calling To JettonWallet:\n" + jetton_wallet + "\n");
-    await wallet_contract.sendTransfer({
+    await reciver_wallet_contract.sendTransfer({
         seqno,
         secretKey,
         messages: [

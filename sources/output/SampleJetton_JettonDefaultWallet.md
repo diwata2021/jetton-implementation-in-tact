@@ -1,6 +1,6 @@
 # TACT Compilation Report
 Contract: JettonDefaultWallet
-BOC Size: 2263 bytes
+BOC Size: 2275 bytes
 
 # Types
 Total Types: 17

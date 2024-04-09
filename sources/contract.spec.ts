@@ -128,10 +128,10 @@ describe("contract", () => {
             sender: receiver.address,
             response_destination: sender.address,
             custom_payload: null,
-            forward_ton_amount: toNano("0.1"),
+            forward_ton_amount: toNano("0.0001"),
             forward_payload: beginCell().storeUint(0, 1).storeUint(0, 32).endCell(),
         };
-        const transferResult = await senderWallet.send(sender.getSender(), { value: toNano("0.5") }, transferMessage);
+        const transferResult = await senderWallet.send(sender.getSender(), { value: toNano("0.2") }, transferMessage);
         expect(transferResult.transactions).toHaveTransaction({
             from: sender.address,
             to: senderWallet.address,

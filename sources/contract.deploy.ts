@@ -26,9 +26,9 @@ dotenv.config();
     let deployer_wallet_contract = client4.open(deployer_wallet);
 
     const jettonParams = {
-        name: "DiwataToken",
-        description: "This is description of Test Jetton Token in Tact-lang",
-        symbol: "DT",
+        name: "DiwataTokenV1",
+        description: "This is description of Test Jetton Token in Tact-lang contain fee",
+        symbol: "DT-V1",
         image: "https://avatars.githubusercontent.com/u/104382459?s=200&v=4",
     };
 
